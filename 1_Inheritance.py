@@ -166,26 +166,107 @@ class Reviewer(Mentor):
 
 
 # Тестовые данные
-# Создаём объекты
-reviewer = Reviewer("Some", "Buddy")
-lecturer = Lecturer("Some", "Buddy")
-student = Student("Ruoy", "Eman", "male")
+# Создаём студентов
+student1 = Student("Анна", "Иванова", "женский")
+student2 = Student("Иван", "Петров", "мужской")
 
-# Заполняем данные 
-student.courses_in_progress = ["Python", "Git"]
-student.finished_courses = ["Введение в программирование"]
-student.grades = {"Python": [10, 10, 10, 9, 10, 10, 10, 10, 10, 10],
-                  "Git": [10, 10, 10, 9, 10, 10, 10, 10, 10, 10]}
+# Заполняем данные для студентов
+student1.courses_in_progress = ["Python", "Git"]
+student1.finished_courses = ["Введение в программирование"]
+student1.grades = {
+    "Python": [8, 9, 7],
+    "Git": [9, 8]
+}
 
-lecturer.courses_attached = ["Python"]
-lecturer.grades = {"Python":
-                   [10, 10, 10, 9, 10, 10, 10, 10, 10, 10]}
+student2.courses_in_progress = ["Python"]
+student2.finished_courses = ["Математика для программистов"]
+student2.grades = {
+    "Python": [10, 9, 10]
+}
 
-# Выводим информацию
-print(reviewer)
-print()
-print(lecturer)
-print()
-print(student)
+# Создаём лекторов
+lecturer1 = Lecturer("Сергей", "Сидоров")
+lecturer2 = Lecturer("Мария", "Козлова")
+
+# Прикрепляем курсы к лекторам
+lecturer1.courses_attached = ["Python", "Git"]
+lecturer2.courses_attached = ["Python"]
+
+# Добавляем оценки лекторам от студентов
+student1.rate_lecture(lecturer1, "Python", 9)
+student1.rate_lecture(lecturer1, "Git", 8)
+student2.rate_lecture(lecturer1, "Python", 10)
+student2.rate_lecture(lecturer2, "Python", 7)
+
+# Создаём ревьюеров
+reviewer1 = Reviewer("Алексей", "Смирнов")
+reviewer2 = Reviewer("Елена", "Васильева")
+
+# Прикрепляем курсы к ревьюерам
+reviewer1.courses_attached = ["Python"]
+reviewer2.courses_attached = ["Git", "Python"]
+
+# Ревьюеры ставят оценки студентам
+reviewer1.rate_hw(student1, "Python", 9)
+reviewer1.rate_hw(student2, "Python", 10)
+reviewer2.rate_hw(student1, "Git", 8)
+reviewer2.rate_hw(student1, "Python", 7)
+
+print("=" * 50)
+print("ИНФОРМАЦИЯ О СТУДЕНТАХ")
+print("=" * 50)
+
+# Выводим информацию о студентах через __str__
+print(student1)
+print("-" * 30)
+print(student2)
+
+# Демонстрируем сравнение студентов по средней оценке
+print("\nСРАВНЕНИЕ СТУДЕНТОВ:")
+print(f"Анна < Иван: {student1 < student2}")
+print(f"Анна == Иван: {student1 == student2}")
+print(f"Анна > Иван: {student1 > student2}")
+
+print("\n" + "=" * 50)
+print("ИНФОРМАЦИЯ О ЛЕКТОРАХ")
+print("=" * 50)
+
+# Выводим информацию о лекторах через __str__
+print(lecturer1)
+print("-" * 30)
+print(lecturer2)
+
+# Демонстрируем сравнение лекторов по средней оценке
+print("\nСРАВНЕНИЕ ЛЕКТОРОВ:")
+print(f"Сергей < Мария: {lecturer1 < lecturer2}")
+print(f"Сергей == Мария: {lecturer1 == lecturer2}")
+print(f"Сергей > Мария: {lecturer1 > lecturer2}")
+
+print("\n" + "=" * 50)
+print("ИНФОРМАЦИЯ О РЕВЬЮЕРАХ")
+print("=" * 50)
+
+# Выводим информацию о ревьюерах через __str__
+print(reviewer1)
+print("-" * 30)
+print(reviewer2)
+
+print("\n" + "=" * 50)
+print("ТЕСТИРОВАНИЕ ОШИБОК")
+print("=" * 50)
+
+# Тестируем различные сценарии ошибок
+print("\nТЕСТ: попытка поставить оценку не лектору")
+student1.rate_lecture("не лектор", "Python", 5)
+
+print("\nТЕСТ: попытка поставить оценку на курс, на который не записан")
+student2.rate_lecture(lecturer1, "Java", 8)
+
+print("\nТЕСТ: попытка поставить некорректную оценку")
+reviewer1.rate_hw(student1, "Python", 15)
+
+print("\nТЕСТ: попытка поставить оценку студенту, не прикреплённому к курсу")
+reviewer3 = Reviewer("Дмитрий", "Николаев")
+reviewer3.rate_hw(student1, "Python", 8)
 
 
