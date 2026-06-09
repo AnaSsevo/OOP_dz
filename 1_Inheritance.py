@@ -35,6 +35,46 @@ class Student:
             lecturer.grades[course] = [grade]
 
         return None
+    
+    def get_average_hw_grade(self):
+        """Вычисляет среднюю оценку за домашние задания."""
+        if not self.grades:
+            return 0
+
+        total_grades = 0
+        total_count = 0
+
+        for grades_list in self.grades.values():
+            total_grades += sum(grades_list)
+            total_count += len(grades_list)
+
+        return total_grades / total_count if total_count > 0 else 0
+
+    def __str__(self):
+        avg_grade = self.get_average_hw_grade()
+        courses_in_progress_str = ', '.join(self.courses_in_progress) if self.courses_in_progress else 'Нет'
+        finished_courses_str = ', '.join(self.finished_courses) if self.finished_courses else 'Нет'
+
+        return (f"Имя: {self.name}\n"
+                f"Фамилия: {self.surname}\n"
+                f"Средняя оценка за домашние задания: {avg_grade:.1f}\n"
+                f"Курсы в процессе изучения: {courses_in_progress_str}\n"
+                f"Завершенные курсы: {finished_courses_str}")
+
+    def __lt__(self, other):
+        if isinstance(other, Student):
+            return self.get_average_hw_grade() < other.get_average_hw_grade()
+        return NotImplemented
+
+    def __eq__(self, other):
+        if isinstance(other, Student):
+            return self.get_average_hw_grade() == other.get_average_hw_grade()
+        return NotImplemented
+
+    def __gt__(self, other):
+        if isinstance(other, Student):
+            return self.get_average_hw_grade() > other.get_average_hw_grade()
+        return NotImplemented
 
 
 class Mentor:
@@ -47,6 +87,43 @@ class Lecturer(Mentor):
     def __init__(self, name, surname):
         super().__init__(name, surname)
         self.grades = {}  # словарь: курс -> список оценок
+
+    def get_average_lecture_grade(self):
+        """Вычисляет среднюю оценку за лекции."""
+        if not self.grades:
+            return 0
+
+        total_grades = 0
+        total_count = 0
+
+        for grades_list in self.grades.values():
+            total_grades += sum(grades_list)
+            total_count += len(grades_list)
+
+        return total_grades / total_count if total_count > 0 else 0
+
+    def __str__(self):
+        avg_grade = self.get_average_lecture_grade()
+        return (f"Имя: {self.name}\n"
+                f"Фамилия: {self.surname}\n"
+                f"Средняя оценка за лекции: {avg_grade:.1f}")
+
+
+    def __lt__(self, other):
+        if isinstance(other, Lecturer):
+            return self.get_average_lecture_grade() < other.get_average_lecture_grade()
+        return NotImplemented
+
+    def __eq__(self, other):
+        if isinstance(other, Lecturer):
+            return self.get_average_lecture_grade() == other.get_average_lecture_grade()
+        return NotImplemented
+
+    def __gt__(self, other):
+        if isinstance(other, Lecturer):
+            return self.get_average_lecture_grade() > other.get_average_lecture_grade()
+        return NotImplemented
+
 
 class Reviewer(Mentor):
     def __init__(self, name, surname):
@@ -82,20 +159,33 @@ class Reviewer(Mentor):
 
         return None
 
+    def __str__(self):
+        return (f"Имя: {self.name}\n"
+                f"Фамилия: {self.surname}")
+
+
+
 # Тестовые данные
-lecturer = Lecturer('Иван', 'Иванов')
-reviewer = Reviewer('Пётр', 'Петров')
-student = Student('Ольга', 'Алёхина', 'Ж')
+# Создаём объекты
+reviewer = Reviewer("Some", "Buddy")
+lecturer = Lecturer("Some", "Buddy")
+student = Student("Ruoy", "Eman", "male")
 
-student.courses_in_progress += ['Python', 'Java']
-lecturer.courses_attached += ['Python', 'C++']
-reviewer.courses_attached += ['Python', 'C++']
+# Заполняем данные 
+student.courses_in_progress = ["Python", "Git"]
+student.finished_courses = ["Введение в программирование"]
+student.grades = {"Python": [10, 10, 10, 9, 10, 10, 10, 10, 10, 10],
+                  "Git": [10, 10, 10, 9, 10, 10, 10, 10, 10, 10]}
 
-# Тесты
-print(student.rate_lecture(lecturer, 'Python', 7))  # None
-print(student.rate_lecture(lecturer, 'Java', 8))   # Ошибка: лектор не прикреплён к курсу 'Java'!
-print(student.rate_lecture(lecturer, 'C++', 8))    # Ошибка: вы не записаны на курс 'C++'!
-print(student.rate_lecture(reviewer, 'Python', 6))  # Ошибка: можно оценивать только лекторов!
+lecturer.courses_attached = ["Python"]
+lecturer.grades = {"Python":
+                   [10, 10, 10, 9, 10, 10, 10, 10, 10, 10]}
 
-print(lecturer.grades)  # {'Python': [7]}
+# Выводим информацию
+print(reviewer)
+print()
+print(lecturer)
+print()
+print(student)
+
 
